@@ -52,6 +52,25 @@ pnpm repair      # re-apply after Discord updates itself
 
 `pnpm inject` downloads the Equilotl CLI into `dist/Installer/` and points it at this repo's `dist/desktop` build. If Discord is installed in a root-owned location (for example `/usr/share/discord` on Linux), the CLI will ask for `sudo`/`doas`. Launch Discord normally afterwards; the settings panel and logs should say **DarknessClient**.
 
+### Windows one-file installer
+
+`install-darknessclient.cmd` is a self-contained Windows installer: it embeds the built mod, so no Node.js, pnpm, or separate downloads are needed. Give that single file to the end user and have them double-click it. It:
+
+1. Detects Discord Stable, Canary, PTB and Development installs under `%LOCALAPPDATA%`.
+2. Asks which install to patch.
+3. Closes Discord if it is running.
+4. Backs up `resources/app.asar` as `resources/_app.asar` and installs the mod.
+5. Offers to relaunch Discord.
+
+Settings then live in `%APPDATA%\DarknessClient`. Re-run the same file after a Discord update to re-apply the patch. To regenerate it after changing the client:
+
+```bash
+pnpm buildStandalone
+pnpm makeInstaller
+```
+
+Because it embeds a compressed payload and launches PowerShell, some antivirus tools may flag the `.cmd`; verify the file hash before distributing it.
+
 ### Browser extension
 
 - **Chromium:** open `chrome://extensions`, enable Developer mode, choose **Load unpacked**, and select `dist/browser/chromium-unpacked/`.
