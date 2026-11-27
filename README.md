@@ -73,9 +73,27 @@ Raw files can also be saved and run directly:
 - Windows: `https://github.com/wemre3131/DarknessClient/raw/main/install-darknessclient.cmd`
 - macOS/Linux: `https://github.com/wemre3131/DarknessClient/raw/main/install-darknessclient.sh`
 
+### One-line uninstall commands
+
+These detect patched Discord installs, restore the original `app.asar` from `_app.asar`, remove the backup, and optionally delete DarknessClient settings.
+
+**Windows PowerShell:**
+
+```powershell
+$u="$env:TEMP\uninstall-darknessclient.cmd"; iwr https://raw.githubusercontent.com/wemre3131/DarknessClient/main/uninstall-darknessclient.cmd -OutFile $u; & $u
+```
+
+**macOS Terminal / Linux shell:**
+
+```bash
+f=$(mktemp); curl -fsSL https://raw.githubusercontent.com/wemre3131/DarknessClient/main/uninstall-darknessclient.sh -o "$f" && sh "$f"; rm -f "$f"
+```
+
+The uninstallers are also attached to every GitHub release.
+
 Settings live in `%APPDATA%\DarknessClient` on Windows, `~/Library/Application Support/DarknessClient` on macOS, and `~/.config/DarknessClient` on Linux. Re-run the same command after a Discord update to re-apply the patch.
 
-To regenerate both installers after changing the client:
+To regenerate all four scripts after changing the client:
 
 ```bash
 pnpm buildStandalone

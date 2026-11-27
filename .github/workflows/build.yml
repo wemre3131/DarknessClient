@@ -52,6 +52,7 @@ jobs:
                   cp browser/browser.* release
                   cp DarknessClient.user.{js,js.LEGAL.txt} release
                   cp ../install-darknessclient.{cmd,sh} release
+                  cp ../uninstall-darknessclient.{cmd,sh} release
 
                   # copy the plugin data jsons, the extension zips and the desktop/equibop asars
                   cp *.{json,zip,asar} release
