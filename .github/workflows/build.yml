@@ -68,7 +68,7 @@ jobs:
                   rm release/*.map
 
             - name: Upload DarknessClient Stable
-              if: ${{ vars.ACT == 'false' }}
+              if: ${{ vars.ACT != 'true' }}
               run: |
                   if ! gh release view latest >/dev/null 2>&1; then
                       gh release create latest --title "DarknessClient Latest" --notes "Automated build from $GITHUB_SHA"
