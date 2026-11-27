@@ -208,8 +208,8 @@ function EquicordSettings() {
             ) : (
                 <SpecialCard
                     className="vc-special-card-dark"
-                    title="Support the Project"
-                    description="Please consider supporting the development of Equicord by donating!"
+                    title="Support Darknessclient"
+                    description="Please consider supporting the development of DarknessClient by donating!"
                     cardImage={donateImage}
                     backgroundImage={DONOR_BACKGROUND_IMAGE}
                     backgroundColor="#232428"

@@ -26,9 +26,10 @@ export function DonateButton({
     equicord = false,
     className,
     variant = "none",
+    label = "Support Darknessclient",
     ...props
-}: Partial<ButtonProps> & { equicord?: boolean; }) {
-    const link = equicord ? "https://github.com/sponsors/thororen1234" : "https://github.com/sponsors/Vendicated";
+}: Partial<ButtonProps> & { equicord?: boolean; label?: string; }) {
+    const link = "https://paypal.me/kkavaski";
     return (
         <Button
             size="medium"
@@ -39,7 +40,7 @@ export function DonateButton({
             className={className || "vc-donate-button"}
         >
             <Heart />
-            Donate
+            {label}
         </Button>
     );
 }

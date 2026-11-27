@@ -4,7 +4,7 @@
     "name": "DarknessClient Web",
     "description": "DarknessClient - every Vencord and Equicord plugin in your browser",
     "author": "DarknessClient",
-    "homepage_url": "https://github.com/DarknessClient/DarknessClient",
+    "homepage_url": "https://github.com/wemre3131/DarknessClient",
     "icons": {
         "128": "icon.png"
     },

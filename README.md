@@ -87,7 +87,7 @@ Deliberately left unchanged:
 - `.github/` workflows — they reference upstream repositories, release artifacts, and CI secrets.
 - `CONTRIBUTING.md` and `PRIVACY_POLICY.md` — inherited upstream governance documents, left untouched rather than inventing new policy.
 
-The git `origin` remote currently points at `https://github.com/DarknessClient/DarknessClient.git`. Change it to your own fork before relying on the in-client updater. The build also accepts `DARKNESSCLIENT_REMOTE` (or legacy `EQUICORD_REMOTE`) to override the embedded remote at build time.
+The git `origin` remote points at `https://github.com/wemre3131/DarknessClient.git`, which is also the repository linked from the built client. Support goes to `https://paypal.me/kkavaski`. The build also accepts `DARKNESSCLIENT_REMOTE` (or legacy `EQUICORD_REMOTE`) to override the embedded remote at build time.
 
 ## License
 

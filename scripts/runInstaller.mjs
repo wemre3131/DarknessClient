@@ -71,7 +71,7 @@ async function ensureBinary() {
 
     const res = await fetch(BASE_URL + filename, {
         headers: {
-            "User-Agent": "DarknessClient (https://github.com/DarknessClient/DarknessClient)",
+            "User-Agent": "DarknessClient (https://github.com/wemre3131/DarknessClient)",
             "If-None-Match": etag
         }
     });

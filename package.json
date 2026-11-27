@@ -3,15 +3,15 @@
     "version": "1.0.0",
     "private": "true",
     "description": "Discord client mod with every Vencord and Equicord plugin built in",
-    "homepage": "https://github.com/DarknessClient/DarknessClient#readme",
+    "homepage": "https://github.com/wemre3131/DarknessClient#readme",
     "bugs": {
-        "url": "https://github.com/DarknessClient/DarknessClient/issues"
+        "url": "https://github.com/wemre3131/DarknessClient/issues"
     },
     "license": "GPL-3.0-or-later",
     "author": "DarknessClient",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/DarknessClient/DarknessClient.git"
+        "url": "git+https://github.com/wemre3131/DarknessClient.git"
     },
     "scripts": {
         "build": "node --require=./scripts/suppressExperimentalWarnings.js scripts/build/build.mjs",

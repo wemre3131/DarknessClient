@@ -2,10 +2,10 @@
 // @name            DarknessClient
 // @description     A Discord client mod - Web version
 // @version         %version%
-// @author          DarknessClient (https://github.com/DarknessClient)
-// @namespace       https://github.com/DarknessClient/DarknessClient
-// @supportURL      https://github.com/DarknessClient/DarknessClient
-// @icon            https://raw.githubusercontent.com/DarknessClient/DarknessClient/refs/heads/main/browser/icon.png
+// @author          DarknessClient (https://github.com/wemre3131)
+// @namespace       https://github.com/wemre3131/DarknessClient
+// @supportURL      https://paypal.me/kkavaski
+// @icon            https://raw.githubusercontent.com/wemre3131/DarknessClient/refs/heads/main/browser/icon.png
 // @license         GPL-3.0
 // @match           *://*.discord.com/*
 // @grant           GM_xmlhttpRequest

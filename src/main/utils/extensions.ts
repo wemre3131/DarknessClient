@@ -83,7 +83,7 @@ export async function installExt(id: string) {
 
         const buf = await fetchBuffer(url, {
             headers: {
-                "User-Agent": `Electron ${process.versions.electron} ~ DarknessClient (https://github.com/DarknessClient/DarknessClient)`
+                "User-Agent": `Electron ${process.versions.electron} ~ DarknessClient (https://github.com/wemre3131/DarknessClient)`
             }
         });
 
