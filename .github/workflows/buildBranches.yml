@@ -111,7 +111,7 @@ jobs:
                   find . -size 0 -delete
 
                   mkdir -p userscript
-                  mv Equicord.user.* userscript/
+                  mv DarknessClient.user.* userscript/
                   mv desktop.asar desktop/
                   mv equibop.asar equibop/
                   mv extension-*.zip browser/
