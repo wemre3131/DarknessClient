@@ -52,7 +52,7 @@ export const gitHash = process.env.EQUICORD_HASH || execSync("git rev-parse HEAD
 
 export const banner = {
     js: `
-// Equicord ${gitHash}
+// DarknessClient ${gitHash}
 // Standalone: ${IS_STANDALONE}
 // Platform: ${IS_STANDALONE === false ? process.platform : "Universal"}
 // Updater Disabled: ${IS_UPDATER_DISABLED}
@@ -244,7 +244,7 @@ export const gitRemotePlugin = {
             namespace: "git-remote", path: args.path
         }));
         build.onLoad({ filter, namespace: "git-remote" }, async () => {
-            let remote = process.env.EQUICORD_REMOTE;
+            let remote = process.env.DARKNESSCLIENT_REMOTE || process.env.EQUICORD_REMOTE;
             if (!remote) {
                 const res = await promisify(exec)("git remote get-url origin", { encoding: "utf-8" });
                 remote = res.stdout.trim()

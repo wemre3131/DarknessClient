@@ -1,10 +1,10 @@
 {
     "manifest_version": 2,
     "minimum_chrome_version": "91",
-    "name": "Equicord Web",
-    "description": "The other cutest Discord mod now in your browser",
-    "author": "Equicord",
-    "homepage_url": "https://github.com/Equicord/Equicord",
+    "name": "DarknessClient Web",
+    "description": "DarknessClient - every Vencord and Equicord plugin in your browser",
+    "author": "DarknessClient",
+    "homepage_url": "https://github.com/DarknessClient/DarknessClient",
     "icons": {
         "128": "icon.png"
     },
@@ -25,7 +25,7 @@
         {
             "run_at": "document_start",
             "matches": ["*://*.discord.com/*"],
-            "js": ["dist/Equicord.js"],
+            "js": ["dist/DarknessClient.js"],
             "all_frames": true,
             "world": "MAIN"
         }
@@ -33,10 +33,10 @@
     "background": {
         "scripts": ["background.js"]
     },
-    "web_accessible_resources": ["dist/Equicord.js", "dist/Equicord.css", "vendor/*"],
+    "web_accessible_resources": ["dist/DarknessClient.js", "dist/DarknessClient.css", "vendor/*"],
     "browser_specific_settings": {
         "gecko": {
-            "id": "firefox@equicord.org",
+            "id": "firefox@darknessclient.local",
             "strict_min_version": "128.0",
             "data_collection_permissions": {
                 "required": ["none"],

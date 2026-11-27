@@ -71,7 +71,7 @@ async function ensureBinary() {
 
     const res = await fetch(BASE_URL + filename, {
         headers: {
-            "User-Agent": "Equicord (https://github.com/Equicord/Equicord)",
+            "User-Agent": "DarknessClient (https://github.com/DarknessClient/DarknessClient)",
             "If-None-Match": etag
         }
     });

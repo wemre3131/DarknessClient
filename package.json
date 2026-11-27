@@ -1,17 +1,17 @@
 {
-    "name": "equicord",
-    "version": "1.15.18.2",
+    "name": "darknessclient",
+    "version": "1.0.0",
     "private": "true",
-    "description": "The other cutest Discord client mod",
-    "homepage": "https://github.com/Equicord/Equicord#readme",
+    "description": "Discord client mod with every Vencord and Equicord plugin built in",
+    "homepage": "https://github.com/DarknessClient/DarknessClient#readme",
     "bugs": {
-        "url": "https://github.com/Equicord/Equicord/issues"
+        "url": "https://github.com/DarknessClient/DarknessClient/issues"
     },
     "license": "GPL-3.0-or-later",
-    "author": "Equicord",
+    "author": "DarknessClient",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Equicord/Equicord.git"
+        "url": "git+https://github.com/DarknessClient/DarknessClient.git"
     },
     "scripts": {
         "build": "node --require=./scripts/suppressExperimentalWarnings.js scripts/build/build.mjs",

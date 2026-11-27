@@ -1,128 +1,68 @@
-# [<img src="./browser/icon.png" width="40" align="left" alt="Equicord">](https://github.com/Equicord/Equicord) Equicord
+# DarknessClient
 
-[![Equibop](https://img.shields.io/badge/Equibop-grey?style=flat)](https://github.com/Equicord/Equibop)
-[![Tests](https://github.com/Equicord/Equicord/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/Equicord/Equicord/actions/workflows/test.yml)
-[![Discord](https://img.shields.io/discord/1173279886065029291.svg?color=768AD4&label=Discord&logo=discord&logoColor=white)](https://equicord.org/discord)
+A Discord client mod that ships with **every plugin from both [Vencord](https://github.com/Vendicated/Vencord) and [Equicord](https://github.com/Equicord/Equicord)** enabled in one build.
 
-Equicord is a fork of [Vencord](https://github.com/Vendicated/Vencord), with over 300+ plugins.
+DarknessClient is a downstream fork of Equicord (itself a Vencord fork). It keeps Equicord's plugin set and adds back the four Vencord plugins Equicord does not carry: `EditUsers`, `oneko`, `SpotifyControls`, and `VencordToolbox`. The result is a single client with **380 plugins** available out of the box.
 
-You can join our [Discord server](https://equicord.org/discord) for commits, changes, chatting, or even support.
+## What is included
 
-### Included Plugins
+| Source | Plugins |
+| --- | --- |
+| `src/plugins/` | 170 directories (Vencord base + 4 ported plugins + core plugins) |
+| `src/equicordplugins/` | 207 directories (Equicord exclusives) |
+| **Total registered plugins** | **380** (verified with `pnpm generatePluginJson`) |
 
-Our included plugins can be found [here](https://equicord.org/plugins).
+All 380 plugins are compiled into the bundles and selectable in the Plugins settings tab. They are **not all switched on at once** — upstream marks most plugins `enabledByDefault: false`, and enabling conflicting plugins together can break the client. Enable what you need in settings.
 
-## Installing / Uninstalling
+Build targets:
 
-Windows
+- **Desktop / standalone patcher** — built into `dist/desktop/`
+- **Equibop** — built into `dist/equibop/`
+- **Browser extension and userscript** — built into `dist/browser/`, `dist/*.user.js`
 
-| | X64 | ARM64 |
-| --- | --- | --- |
-| GUI | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl.exe) | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-arm64.exe) |
-| CLI | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli.exe) | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-arm64.exe) |
+## Requirements
 
-MacOS
+- Node.js **22 or newer** (tested with Node 26)
+- pnpm **12.18.0** (`corepack` is not required; install it with `npm i -g pnpm@12.18.0` or via a local prefix)
+- A git checkout with at least one commit and an `origin` remote — the build embeds `git rev-parse HEAD` and `git remote get-url origin`
 
-| | Universal | X64 | ARM64 |
-| --- | --- | --- | --- |
-| GUI | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl.dmg) | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-x64.dmg) | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-arm64.dmg) |
-| CLI | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-universal) | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-x64) | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-arm64) |
+## Build
 
-The CLI builds are plain binaries, so run `chmod +x <file>` after downloading.
-
-Linux
-
-| | X64 | ARM64 |
-| --- | --- | --- |
-| Combined GUI | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl) | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-arm64) |
-| X11 GUI | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-x11) | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-x11-arm64) |
-| Wayland GUI | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-wayland) | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-wayland-arm64) |
-| CLI | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-linux) | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-linux-arm64) |
-
-```shell
-bash -c "$(curl -sS https://raw.githubusercontent.com/Equicord/Equilotl/refs/heads/main/install.sh)"
-```
-
-## Installing Equicord Devbuild
-
-### Dependencies
-
-[Git](https://git-scm.com/download) and [Node.JS LTS](https://nodejs.dev/en/) are required.
-
-Install `pnpm`:
-
-> :exclamation: This next command may need to be run as admin/root depending on your system, and you may need to close and reopen your terminal for pnpm to be in your PATH.
-
-```shell
-npm i -g pnpm
-```
-
-> :exclamation: **IMPORTANT** Make sure you aren't using an admin/root terminal from here onwards. It **will** mess up your Discord/Equicord instance and you **will** most likely have to reinstall.
-
-Clone Equicord:
-
-```shell
-git clone https://github.com/Equicord/Equicord
-cd Equicord
-```
-
-Install dependencies:
-
-```shell
+```bash
 pnpm install --frozen-lockfile
+pnpm buildStandalone    # desktop + equibop + patcher
+pnpm buildWebStandalone # browser extension + userscript
 ```
 
-Build Equicord:
+Outputs land in `dist/`.
 
-```shell
-pnpm build
+## Verification
+
+```bash
+pnpm testTsc                                   # typecheck
+pnpm lint                                      # oxlint
+pnpm buildStandalone                           # desktop build
+pnpm buildWebStandalone                        # web build
+pnpm generatePluginJson /tmp/plugins.json      # enumerate all registered plugins
+node -e "console.log(require('/tmp/plugins.json').length)"  # -> 380
 ```
 
-Inject Equicord into your desktop client:
+## Rebranding notes
 
-```shell
-pnpm inject
-```
+The client identity is DarknessClient: package metadata, browser manifests, userscript metadata, logger prefix, user agent, tray menu, settings section, update messages, about page, and the native data directory (`DarknessClientData`).
 
-Build Equicord for web:
+Deliberately left unchanged:
 
-```shell
-pnpm buildWeb
-```
+- Upstream code identifiers and module aliases (`@equicordplugins`, `EquicordDevs`, `equicord_section`, etc.) — changing these would break plugin imports.
+- Author credits in every plugin — Vencord and Equicord contributors keep their attribution.
+- External service integrations (Equicord Cloud, badges, donor perks, support server) — these still point at the real upstream services, so renaming them would misrepresent who provides them.
+- `.github/` workflows — they reference upstream repositories, release artifacts, and CI secrets.
+- `CONTRIBUTING.md` and `PRIVACY_POLICY.md` — inherited upstream governance documents, left untouched rather than inventing new policy.
 
-After building Equicord's web extension, locate the appropriate ZIP file in the `dist` directory and follow your browser’s guide for installing custom extensions, if supported.
+The git `origin` remote currently points at `https://github.com/DarknessClient/DarknessClient.git`. Change it to your own fork before relying on the in-client updater. The build also accepts `DARKNESSCLIENT_REMOTE` (or legacy `EQUICORD_REMOTE`) to override the embedded remote at build time.
 
-Note: Firefox extension zip requires Firefox for developers
+## License
 
-## Credits
+GPL-3.0-or-later. DarknessClient is a fork of Equicord and Vencord; their licenses and contributor credits are preserved in `LICENSE`, source headers, and plugin metadata.
 
-Thank you to [Vendicated](https://github.com/Vendicated) for creating [Vencord](https://github.com/Vendicated/Vencord) & [Suncord](https://github.com/verticalsync/Suncord) by [verticalsync](https://github.com/verticalsync) for helping when needed.
-
-## Star History
-
-<a href="https://star-history.com/#Equicord/Equicord&Timeline">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Equicord/Equicord&type=Timeline&theme=dark&sealed_token=64drv2U7WiV6dQ5VRbOZdxHT3mRzxUzhVvfm5qt1VRpGjVPje0PbObjibX2FYe4zd-h36lCAGZ873gAgb_5_tAzUBixUVbtaLHqy1fNH6PkQP_PqPdKztatlI2s17T9IUFzRyhYynmJ1-H4idFFzEAMN1gRZlVvvmJ71P0LovJPOIqTT7uHIubWcHzxC" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Equicord/Equicord&type=Timeline&sealed_token=64drv2U7WiV6dQ5VRbOZdxHT3mRzxUzhVvfm5qt1VRpGjVPje0PbObjibX2FYe4zd-h36lCAGZ873gAgb_5_tAzUBixUVbtaLHqy1fNH6PkQP_PqPdKztatlI2s17T9IUFzRyhYynmJ1-H4idFFzEAMN1gRZlVvvmJ71P0LovJPOIqTT7uHIubWcHzxC" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Equicord/Equicord&type=Timeline&sealed_token=64drv2U7WiV6dQ5VRbOZdxHT3mRzxUzhVvfm5qt1VRpGjVPje0PbObjibX2FYe4zd-h36lCAGZ873gAgb_5_tAzUBixUVbtaLHqy1fNH6PkQP_PqPdKztatlI2s17T9IUFzRyhYynmJ1-H4idFFzEAMN1gRZlVvvmJ71P0LovJPOIqTT7uHIubWcHzxC" />
-  </picture>
-</a>
-
-## Disclaimer
-
-Discord is trademark of Discord Inc., and solely mentioned for the sake of descriptivity.
-Mentioning it does not imply any affiliation with or endorsement by Discord Inc.
-Vencord is not connected to Equicord and as such, all donation links go to Vendicated's donation link.
-
-<details>
-<summary>Using Equicord violates Discord's terms of service</summary>
-
-Client modifications are against Discord’s Terms of Service.
-
-However, Discord is pretty indifferent about them and there are no known cases of users getting banned for using client mods! So you should generally be fine if you don’t use plugins that implement abusive behaviour. But no worries, all inbuilt plugins are safe to use!
-
-Regardless, if your account is essential to you and getting disabled would be a disaster for you, you should probably not use any client mods (not exclusive to Equicord), just to be safe.
-
-Additionally, make sure not to post screenshots with Equicord in a server where you might get banned for it.
-
-</details>
+Client modifications can violate Discord's Terms of Service. Use at your own risk.

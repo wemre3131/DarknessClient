@@ -61,14 +61,14 @@ function createVencordMenuItems(): MenuItemConstructorOptions[] {
         { type: "separator" },
         {
             id: "equicord",
-            label: "Equicord",
+            label: "DarknessClient",
             submenu: [
                 {
-                    label: "About Equicord",
+                    label: "About DarknessClient",
                     click: () => openAboutWindow()
                 },
                 {
-                    label: "Update Equicord",
+                    label: "Update DarknessClient",
                     visible: !IS_UPDATER_DISABLED,
                     async click(_item, window) {
                         if (isUpdating) return;
@@ -77,19 +77,19 @@ function createVencordMenuItems(): MenuItemConstructorOptions[] {
                         try {
                             const updateAvailable = await updater.fetchUpdate();
                             if (!updateAvailable) {
-                                return notify(window, "No Update Available", "You are already using the latest version of Equicord.");
+                                return notify(window, "No Update Available", "You are already using the latest version of DarknessClient.");
                             }
 
                             const result = await updater.applyUpdate();
                             if (!result) {
-                                return notify(window, "Update Failed", "Failed to apply the update for Equicord.");
+                                return notify(window, "Update Failed", "Failed to apply the update for DarknessClient.");
                             }
 
-                            await notify(window, "Update Successful", "Now relaunching Equicord to apply the update.");
+                            await notify(window, "Update Successful", "Now relaunching DarknessClient to apply the update.");
                             app.relaunch();
                             app.exit();
                         } catch (e) {
-                            notify(window, "Update Error", `An error occurred while updating Equicord.\n\n${String(e)}`);
+                            notify(window, "Update Error", `An error occurred while updating DarknessClient.\n\n${String(e)}`);
                         } finally {
                             isUpdating = false;
                         }
