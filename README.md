@@ -36,6 +36,34 @@ pnpm buildWebStandalone # browser extension + userscript
 
 Outputs land in `dist/`.
 
+## Install
+
+DarknessClient is a **client mod**, not a standalone Discord app. Pick one of these targets.
+
+### Desktop Discord / Equibop (Linux, macOS, Windows)
+
+With Discord installed and the project built:
+
+```bash
+pnpm inject      # patch the installed Discord with dist/desktop
+pnpm uninject    # remove the patch
+pnpm repair      # re-apply after Discord updates itself
+```
+
+`pnpm inject` downloads the Equilotl CLI into `dist/Installer/` and points it at this repo's `dist/desktop` build. If Discord is installed in a root-owned location (for example `/usr/share/discord` on Linux), the CLI will ask for `sudo`/`doas`. Launch Discord normally afterwards; the settings panel and logs should say **DarknessClient**.
+
+### Browser extension
+
+- **Chromium:** open `chrome://extensions`, enable Developer mode, choose **Load unpacked**, and select `dist/browser/chromium-unpacked/`.
+- **Firefox:** open `about:debugging#/runtime/this-firefox`, choose **Load Temporary Add-on**, and select `dist/browser/firefox-unpacked/manifest.json`. This load is temporary and disappears on restart.
+- Ready-made archives are also produced: `dist/extension-chrome.zip` and `dist/extension-firefox.zip`.
+
+### Userscript
+
+Install Tampermonkey (or Violentmonkey on Chromium), then drag `dist/DarknessClient.user.js` into the userscript dashboard. The matching `dist/DarknessClient.user.css` is appended into the script at build time. Upstream notes that this userscript does not work with Violentmonkey/Greasemonkey on Firefox.
+
+If `pnpm` is not on your `PATH`, either install it globally (`sudo npm i -g pnpm@12.18.0`) or prefix the commands with `export PATH="/home/kavasaki/.local/bin:$PATH"`.
+
 ## Verification
 
 ```bash
