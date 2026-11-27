@@ -52,24 +52,37 @@ pnpm repair      # re-apply after Discord updates itself
 
 `pnpm inject` downloads the Equilotl CLI into `dist/Installer/` and points it at this repo's `dist/desktop` build. If Discord is installed in a root-owned location (for example `/usr/share/discord` on Linux), the CLI will ask for `sudo`/`doas`. Launch Discord normally afterwards; the settings panel and logs should say **DarknessClient**.
 
-### Windows one-file installer
+### One-line install commands
 
-`install-darknessclient.cmd` is a self-contained Windows installer: it embeds the built mod, so no Node.js, pnpm, or separate downloads are needed. Give that single file to the end user and have them double-click it. It:
+No Node.js, pnpm, or separate downloads are needed. Paste the command for your OS. Each one downloads a self-contained script and runs it; the script asks which Discord install to patch, closes Discord if needed, backs up `resources/app.asar` as `resources/_app.asar`, installs the mod, and offers to relaunch Discord.
 
-1. Detects Discord Stable, Canary, PTB and Development installs under `%LOCALAPPDATA%`.
-2. Asks which install to patch.
-3. Closes Discord if it is running.
-4. Backs up `resources/app.asar` as `resources/_app.asar` and installs the mod.
-5. Offers to relaunch Discord.
+**Windows PowerShell:**
 
-Settings then live in `%APPDATA%\DarknessClient`. Re-run the same file after a Discord update to re-apply the patch. To regenerate it after changing the client:
+```powershell
+$u="$env:TEMP\darknessclient-install.cmd"; iwr https://raw.githubusercontent.com/wemre3131/DarknessClient/main/install-darknessclient.cmd -OutFile $u; & $u
+```
+
+**macOS Terminal / Linux shell:**
+
+```bash
+f=$(mktemp); curl -fsSL https://raw.githubusercontent.com/wemre3131/DarknessClient/main/install-darknessclient.sh -o "$f" && sh "$f"; rm -f "$f"
+```
+
+Raw files can also be saved and run directly:
+
+- Windows: `https://github.com/wemre3131/DarknessClient/raw/main/install-darknessclient.cmd`
+- macOS/Linux: `https://github.com/wemre3131/DarknessClient/raw/main/install-darknessclient.sh`
+
+Settings live in `%APPDATA%\DarknessClient` on Windows, `~/Library/Application Support/DarknessClient` on macOS, and `~/.config/DarknessClient` on Linux. Re-run the same command after a Discord update to re-apply the patch.
+
+To regenerate both installers after changing the client:
 
 ```bash
 pnpm buildStandalone
 pnpm makeInstaller
 ```
 
-Because it embeds a compressed payload and launches PowerShell, some antivirus tools may flag the `.cmd`; verify the file hash before distributing it.
+Because these embed a compressed payload and call PowerShell/sudo, security tools may flag them; verify the file hash before distributing them.
 
 ### Browser extension
 

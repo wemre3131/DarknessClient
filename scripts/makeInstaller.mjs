@@ -12,7 +12,8 @@ import { gzipSync } from "node:zlib";
 import { createPackage } from "@electron/asar";
 
 const SOURCE = "dist/desktop";
-const OUTPUT = "install-darknessclient.cmd";
+const OUTPUT_CMD = "install-darknessclient.cmd";
+const OUTPUT_SH = "install-darknessclient.sh";
 
 if (!existsSync(SOURCE)) {
     throw new Error(`Missing ${SOURCE}. Run \`pnpm buildStandalone\` first.`);
@@ -149,6 +150,212 @@ if ($launch -eq "" -or $launch -match "^(?i:y)$") {
 }
 `;
 
+    const sh = String.raw`#!/bin/sh
+set -eu
+
+self=$0
+payload=$(awk 'seen { print } /^:::DC_PAYLOAD:::$/ { seen = 1 }' "$self")
+if [ -z "$payload" ]; then
+    echo "Installer payload is missing." >&2
+    exit 1
+fi
+
+tmpdir=$(mktemp -d)
+trap 'rm -rf "$tmpdir"' EXIT HUP INT TERM
+
+if printf '%s\n' "$payload" | base64 -d > "$tmpdir/payload.gz" 2>/dev/null; then
+    :
+else
+    printf '%s\n' "$payload" | base64 -D > "$tmpdir/payload.gz"
+fi
+gzip -dc "$tmpdir/payload.gz" > "$tmpdir/app.asar"
+
+die() {
+    echo "$1" >&2
+    exit 1
+}
+
+echo ""
+echo "DarknessClient Installer"
+echo "========================"
+
+installs=""
+
+add_install() {
+    label=$1
+    app=$2
+    if [ -f "$app" ]; then
+        installs="$installs$label|$app
+"
+    fi
+}
+
+# macOS app bundles
+for bundle in \
+    "/Applications/Discord.app" \
+    "/Applications/Discord Canary.app" \
+    "/Applications/Discord PTB.app" \
+    "/Applications/Discord Development.app" \
+    "$HOME/Applications/Discord.app" \
+    "$HOME/Applications/Discord Canary.app" \
+    "$HOME/Applications/Discord PTB.app" \
+    "$HOME/Applications/Discord Development.app"
+do
+    add_install "$(basename "$bundle") (macOS)" "$bundle/Contents/Resources/app.asar"
+done
+
+# Linux user-level updater installs
+for dir in \
+    "$HOME/.config"/discord*/app-* \
+    "$HOME/.config"/discordcanary*/app-* \
+    "$HOME/.config"/discordptb*/app-* \
+    "$HOME/.config"/discorddevelopment*/app-*
+do
+    [ -f "$dir/resources/app.asar" ] || continue
+    parent=$(basename "$(dirname "$dir")")
+    version=$(basename "$dir")
+    add_install "$parent [$version] (Linux)" "$dir/resources/app.asar"
+done
+
+# Linux system, Flatpak and Snap installs
+for dir in \
+    /usr/share/discord \
+    /usr/share/discord-canary \
+    /usr/share/discord-ptb \
+    /opt/discord \
+    /opt/discordcanary \
+    /opt/discord-ptb
+do
+    add_install "$(basename "$dir") (Linux)" "$dir/resources/app.asar"
+done
+
+for dir in \
+    "$HOME/.var/app"/com.discordapp.Discord*/files/Discord \
+    /var/lib/flatpak/app/com.discordapp.Discord*/current/active/files/Discord
+do
+    [ -f "$dir/resources/app.asar" ] || continue
+    add_install "Discord Flatpak [$(basename "$dir")]" "$dir/resources/app.asar"
+done
+
+for dir in /snap/discord/current /snap/discord-canary/current
+do
+    add_install "Discord Snap" "$dir/resources/app.asar"
+    add_install "Discord Snap" "$dir/usr/share/discord/resources/app.asar"
+done
+
+count=$(printf '%s\n' "$installs" | awk 'NF { n++ } END { print n + 0 }')
+if [ "$count" -eq 0 ]; then
+    echo "No Discord install found." >&2
+    exit 1
+fi
+
+echo ""
+echo "Select the Discord install to patch:"
+printf '%s\n' "$installs" | awk -F'|' 'NF { printf "  [%d] %s\n", ++n, $1 }'
+echo ""
+
+printf 'Enter number (q to quit): '
+IFS= read -r answer || exit 0
+case "$answer" in
+    q|Q) exit 0 ;;
+esac
+case "$answer" in
+    ''|*[!0-9]*) die "Invalid selection." ;;
+esac
+if [ "$answer" -lt 1 ] || [ "$answer" -gt "$count" ]; then
+    die "Invalid selection."
+fi
+
+app=$(printf '%s\n' "$installs" | awk -F'|' -v n="$answer" 'NF && ++i == n { print $2 }')
+[ -n "$app" ] || die "Could not resolve that install."
+
+if command -v pgrep >/dev/null 2>&1; then
+    running=$(pgrep -f 'Discord(Canary|PTB|Development)?' || true)
+    if [ -n "$running" ]; then
+        echo "Discord is currently running."
+        printf 'Close all Discord processes now? [Y/n] '
+        IFS= read -r close || close=n
+        case "$close" in
+            ''|y|Y|yes|YES)
+                for pid in $running; do kill "$pid" 2>/dev/null || true; done
+                sleep 1
+                for pid in $running; do kill -9 "$pid" 2>/dev/null || true; done
+                ;;
+            *)
+                die "Aborted. Close Discord and run the installer again."
+                ;;
+        esac
+    fi
+fi
+
+resources=$(dirname "$app")
+backup="$resources/_app.asar"
+sudo_cmd=""
+if [ ! -w "$resources" ]; then
+    if command -v sudo >/dev/null 2>&1; then
+        echo "This install needs administrator rights. You may be prompted for your password."
+        sudo_cmd=sudo
+    else
+        die "Cannot write to $resources and sudo is unavailable."
+    fi
+fi
+
+if [ -f "$backup" ]; then
+    echo "An existing patch was found. Replacing it with DarknessClient..."
+    backup_size=$(wc -c < "$backup" | tr -d ' ')
+    if [ "$backup_size" -lt 1048576 ]; then
+        echo "Warning: _app.asar looks unusually small; the install may be broken."
+    fi
+else
+    $sudo_cmd cp -p "$app" "$backup"
+    echo "Backed up original app.asar to _app.asar"
+fi
+
+$sudo_cmd chmod u+w "$app" "$backup" 2>/dev/null || true
+$sudo_cmd cp "$tmpdir/app.asar" "$app"
+
+echo ""
+echo "DarknessClient installed successfully."
+case "$(uname -s)" in
+    Darwin) echo "Settings are stored in $HOME/Library/Application Support/DarknessClient" ;;
+    *) echo "Settings are stored in $HOME/.config/DarknessClient" ;;
+esac
+
+printf 'Launch Discord now? [Y/n] '
+IFS= read -r launch || launch=n
+case "$launch" in
+    ''|y|Y|yes|YES)
+        case "$app" in
+            *.app/Contents/Resources/app.asar)
+                bundle=$(printf '%s' "$app" | sed 's#/Contents/Resources/app\.asar$##')
+                if command -v open >/dev/null 2>&1; then
+                    open "$bundle" >/dev/null 2>&1 &
+                fi
+                ;;
+            *)
+                root=$(dirname "$resources")
+                for exe in \
+                    "$root/Discord" \
+                    "$root/discord" \
+                    "$root/DiscordCanary" \
+                    "$root/discord-canary" \
+                    /usr/bin/discord \
+                    /usr/bin/discord-canary \
+                    /usr/bin/discord-ptb
+                do
+                    if [ -x "$exe" ]; then
+                        "$exe" >/dev/null 2>&1 &
+                        break
+                    fi
+                done
+                ;;
+        esac
+        ;;
+esac
+
+exit 0
+`;
+
     // Keep the PowerShell body free of JS interpolation: String.raw above plus
     // explicit concatenation here.
     const cmd = [
@@ -163,8 +370,12 @@ if ($launch -eq "" -or $launch -match "^(?i:y)$") {
         ""
     ].join("\r\n");
 
-    writeFileSync(OUTPUT, cmd);
-    console.log(`Wrote ${OUTPUT} (${(Buffer.byteLength(cmd) / 1024 / 1024).toFixed(2)} MiB, asar ${(asar.length / 1024 / 1024).toFixed(2)} MiB)`);
+    const shell = [sh.trimEnd(), ":::DC_PAYLOAD:::", ...lines, ""].join("\n");
+
+    writeFileSync(OUTPUT_CMD, cmd);
+    writeFileSync(OUTPUT_SH, shell);
+    console.log(`Wrote ${OUTPUT_CMD} (${(Buffer.byteLength(cmd) / 1024 / 1024).toFixed(2)} MiB)`);
+    console.log(`Wrote ${OUTPUT_SH} (${(Buffer.byteLength(shell) / 1024 / 1024).toFixed(2)} MiB, asar ${(asar.length / 1024 / 1024).toFixed(2)} MiB)`);
 } finally {
     rmSync(staging, { recursive: true, force: true });
 }
