@@ -126,3 +126,6 @@ The git `origin` remote points at `https://github.com/wemre3131/DarknessClient.g
 GPL-3.0-or-later. DarknessClient is a fork of Equicord and Vencord; their licenses and contributor credits are preserved in `LICENSE`, source headers, and plugin metadata.
 
 Client modifications can violate Discord's Terms of Service. Use at your own risk.
+
+## 🇹🇷
+A Turkish Developer's Tought of it and Done the Project himself with help of Artificial Intelegence  
